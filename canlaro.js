@@ -1,10 +1,3 @@
-/**************************************************
- * CanLaro Helpers : Canvas, made easy for games
- *     by Richard B. Locsin 
- *     Email: loki [AT] maloki [DOT] net 
- **************************************************/
-
- /// Sprite Class
 function Sprite(src, spriteWidth, spriteHeight, columns, rows) {
   this.img = new Image();
   this.img.src = src;
@@ -12,7 +5,6 @@ function Sprite(src, spriteWidth, spriteHeight, columns, rows) {
   this.animation = 0;
   this.animationFrame = 0;  
   this.animationData = {};
-  var numAnimations = 0;
   this.spriteWidth = spriteWidth;
   this.spriteHeight = spriteHeight;
   this.columns = columns;
@@ -27,6 +19,7 @@ function Sprite(src, spriteWidth, spriteHeight, columns, rows) {
   this.yScale = 1;
   this.rotation = -0.4;
   this.alpha = 1;
+  this.isAnimating = true;
   
   this.SetPosition = function(x, y) {
     this.x = x;
@@ -91,20 +84,15 @@ function Sprite(src, spriteWidth, spriteHeight, columns, rows) {
       (Math.floor(this.frame / this.columns)) * this.spriteHeight,
       this.spriteWidth, this.spriteHeight,
       - centerX, - centerY,
-      this.drawWidth * this.xScale, this.drawHeight * this.yScale); 
-    this.SetNextFrame();
-    
-    context.restore();
+    this.drawWidth * this.xScale, this.drawHeight * this.yScale);
+	
+	context.restore();
+	
+	if (this.isAnimating)
+      this.SetNextFrame();
   };
 }
 
-/// Keyboard Input Handler
-/// Usage:
-///   var keyboard = new KeyboardInput();
-///   keyboard.AddKey('jump', 32);
-///   $(window).keydown( function(evt) { keyboard.OnKeydown(evt) });
-///   $(window).keyup( function(evt) { keyboard.OnKeyUp(evt) });
-///   if (keyboard.keyState.jump) //'jump' key is pressed
 function KeyboardInput() {
   this.keyState = new Array();
   this.keyDict = new Array();
