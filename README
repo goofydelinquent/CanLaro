@@ -1,5 +1,7 @@
 CanLaro: Helpers for HTML5 2D Canvas Game Development
 
+Sample: http://maloki.net/projects/games/BobCanvas/
+
 Here are a few Javascript objects to help you get started: Sprite & Keyboard Input Handler.
 Resource Loader is still being worked out but usable.
 
