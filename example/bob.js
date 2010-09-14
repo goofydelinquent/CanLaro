@@ -1,5 +1,5 @@
 var canvas = document.getElementById('gameCanvas');
-if (canvas.getContext('2d'))  {	//not null - that means we have a canvas!
+if (canvas.getContext('2d'))  { //not null - that means we have a canvas!
   var context = canvas.getContext('2d');
   /*
   //if(pic.complete) donePic()
@@ -50,6 +50,16 @@ var bob = new Sprite("bob.png", 60, 60, 3, 5);
   //bob.isYFlipped = true; 
   bob.xScale = 1;
   bob.yScale = 1;
+  bob.SetPosition(80, 80);
+}
+
+var tile = new Tile("tiles.png", 32, 32, 3, 1);
+{
+  tile.AddTileId("r", 0);
+  tile.AddTileId("g", 1);
+  tile.AddTileId("b", 2);
+  tile.xScale = 0.5;
+  tile.yScale = 0.5;
 }
 
 function processKeyboard() {
@@ -72,16 +82,16 @@ function processKeyboard() {
   else if (keyboard.keyState.left) {
     lastDirection = 'w';
     bob.SetAnimation("swalk");
-	if (bob.isXFlipped)
-	  bob.rotation = 360 - bob.rotation;
+    if (bob.isXFlipped)
+      bob.rotation = 360 - bob.rotation;
     bob.isXFlipped = false;
     x -= moveSize;
   }
   else if (keyboard.keyState.right) {
     lastDirection = 'e';
     bob.SetAnimation("swalk");
-	if (!bob.isXFlipped)
-	  bob.rotation = 360 - bob.rotation;
+    if (!bob.isXFlipped)
+      bob.rotation = 360 - bob.rotation;
     bob.isXFlipped = true;
     x += moveSize;
   }
@@ -95,7 +105,7 @@ function processKeyboard() {
         bob.SetAnimation("sstand");
         bob.isXFlipped = true;
         break;
-	  case 'n':
+      case 'n':
       case 's':
       default:
         bob.SetAnimation('fstand');
@@ -129,7 +139,7 @@ function killBob() {
   if (isAlive)
   {
     isAlive = false;
-	killSound.play();
+    killSound.play();
     bob.SetAnimation("die");
   }
 }
@@ -156,8 +166,22 @@ function deltaTime() {
 */
 function drawGraphics() {
   clear();
+  
+  for(var i = 0; i < WIDTH / 16 - 4; i++) {
+    tile.DrawTile(context, "g", 32 + i * 16, 32);
+  }
+  
   bob.Draw(context);
   
+  for(var i = 0; i < HEIGHT / 16 - 4; i++) {
+    tile.DrawTile(context, "b", 32, i * 16 + 32);
+    tile.DrawTile(context, "b", WIDTH - 16 - 32, 32 + i * 16);
+  }
+  
+  for(var i = 0; i < WIDTH / 16 - 4; i++) {
+    tile.DrawTile(context, "r", 32 + i * 16, HEIGHT - 16 - 32);
+  }
+
   /*
   frameCount++;
   elapsedCounter += elapsed;
@@ -166,7 +190,7 @@ function drawGraphics() {
       avgFramerate = frameCount;
       frameCount = 0;
     }
-	*/
+    */
 }
 
 function gameTick() {

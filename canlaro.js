@@ -3,7 +3,7 @@ function Sprite(src, spriteWidth, spriteHeight, columns, rows) {
   this.img.src = src;
   this.frame = 0;
   this.animation = 0;
-  this.animationFrame = 0;  
+  this.animationFrame = 0;
   this.animationData = {};
   this.spriteWidth = spriteWidth;
   this.spriteHeight = spriteHeight;
@@ -17,16 +17,16 @@ function Sprite(src, spriteWidth, spriteHeight, columns, rows) {
   this.isYFlipped = false;
   this.xScale = 1;
   this.yScale = 1;
-  this.rotation = -0.4;
+  this.rotation = 0;
   this.alpha = 1;
   this.isAnimating = true;
-  
+
   this.SetPosition = function(x, y) {
     this.x = x;
     this.y = y;
   };
   
-  this.AddAnimation = function(id, frames, isLooping) {    
+  this.AddAnimation = function(id, frames, isLooping) { 
     this.animationData[id] = {
       frames: frames,
       isLooping: isLooping
@@ -77,19 +77,77 @@ function Sprite(src, spriteWidth, spriteHeight, columns, rows) {
     
     context.globalAlpha = this.alpha;
     
-    context.shadowColor = "green";
-    
     context.drawImage(this.img, 
       (Math.floor(this.frame % this.columns)) * this.spriteWidth,
-      (Math.floor(this.frame / this.columns)) * this.spriteHeight,
+      (Math.floor(frameY = this.frame / this.columns)) * this.spriteHeight,
       this.spriteWidth, this.spriteHeight,
       - centerX, - centerY,
     this.drawWidth * this.xScale, this.drawHeight * this.yScale);
-	
-	context.restore();
-	
-	if (this.isAnimating)
+    
+    context.restore();
+    
+    if (this.isAnimating)
       this.SetNextFrame();
+  };
+}
+
+function Tile(src, tileWidth, tileHeight, columns, rows) {
+  this.img = new Image();
+  this.img.src = src;
+  this.tileIndex = 0;
+  this.tileData = new Array();
+
+  this.tileWidth = tileWidth;
+  this.tileHeight = tileHeight;
+  this.columns = columns;
+  this.rows = rows;
+  this.drawWidth = tileWidth;
+  this.drawHeight = tileHeight;
+
+  this.isXFlipped = false;
+  this.isYFlipped = false;
+
+  this.xScale = 1;
+  this.yScale = 1;
+  this.alpha = 1;
+
+  this.AddTileId = function(id, tileNumber) {    
+    this.tileData[id] = tileNumber;
+  };
+  
+  this.SetTileId = function(tileId) {
+    this.tileIndex = this.tileData[tileId];
+  };
+  
+  this.SetTileIndex = function(tileIndex) {
+    this.tileIndex = tileIndex;
+  };
+  
+  this.Draw = function(context, x, y) {
+    context.save();
+    
+    context.translate(
+      this.isXFlipped ? (this.tileWidth * this.xScale) + x: x,
+      this.isYFlipped ? (this.tileHeight * this.yScale) + y: y);
+    context.scale(this.isXFlipped ? -1 : 1, this.isYFlipped ? -1 : 1);
+    
+    context.globalAlpha = this.alpha;    
+    
+    context.drawImage(this.img, 
+      (Math.floor(this.tileIndex % this.columns)) * this.tileWidth,
+      (Math.floor(this.tileIndex / this.columns)) * this.tileHeight,
+      this.tileWidth, this.tileHeight,
+      0, 0,
+      this.drawWidth * this.xScale, this.drawHeight * this.yScale);
+    
+    context.restore();
+  };
+  
+  this.DrawTile = function(context, tileId, x, y) {
+    var temp = this.tileIndex;
+    this.SetTileId(tileId);
+    this.Draw(context, x, y);
+    this.tileIndex = temp;
   };
 }
 
@@ -201,8 +259,8 @@ function ResourceLoader() {
       var item = this.Resources[key];
       var obj = item.object;
       console.log(item);
-	  console.log(item.type);
-	  switch(item.type)
+      console.log(item.type);
+      switch(item.type)
       {
         case "audio":
           if (obj.duration == 0) //something might have happened
@@ -215,7 +273,7 @@ function ResourceLoader() {
           }
           else
           {
-		    obj.muted = false;
+            obj.muted = false;
           }
           break;
         case "image":
@@ -226,9 +284,9 @@ function ResourceLoader() {
           break;
       }
     }
-	if (failCount == 0)
-	  return true;
-	else
-	  return false;
+    if (failCount == 0)
+      return true;
+    else
+      return false;
   };
 }
